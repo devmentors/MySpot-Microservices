@@ -1,0 +1,4 @@
+@url = http://localhost:5030
+
+###
+GET {{url}}

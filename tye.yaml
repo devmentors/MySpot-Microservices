@@ -1,0 +1,65 @@
+name: myspot
+services:
+- name: Gateway
+  project: src/Gateway/MySpot.Gateway.Api/MySpot.Gateway.Api.csproj
+  bindings:
+  - port: 5000
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Saga
+  project: src/Saga/MySpot.Saga.Api/MySpot.Saga.Api.csproj
+  bindings:
+  - port: 5010
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Availability
+  project: src/Services/Availability/MySpot.Services.Availability.Api/MySpot.Services.Availability.Api.csproj
+  bindings:
+  - port: 5020
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Mapping
+  project: src/Services/Mapping/MySpot.Services.Mapping.Api/MySpot.Services.Mapping.Api.csproj
+  bindings:
+  - port: 5030
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: ParkingSpots
+  project: src/Services/ParkingSpots/MySpot.Services.ParkingSpots.Api/MySpot.Services.ParkingSpots.Api.csproj
+  bindings:
+  - port: 5040
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Reservations
+  project: src/Services/Reservations/MySpot.Services.Reservations.Api/MySpot.Services.Reservations.Api.csproj
+  bindings:
+  - port: 5050
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Users
+  project: src/Services/Users/MySpot.Services.Users.Api/MySpot.Services.Users.Api.csproj
+  bindings:
+  - port: 5070
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development
+
+- name: Notifications
+  project: src/Services/Notifications/MySpot.Services.Notifications.Api/MySpot.Services.Notifications.Api.csproj
+  bindings:
+  - port: 5080
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: development

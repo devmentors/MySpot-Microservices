@@ -1,0 +1,32 @@
+@gatewayUrl = http://localhost:5000
+@sagaUrl = http://localhost:5010
+@availabilityUrl = http://localhost:5020
+@mappingUrl = http://localhost:5030
+@parkingSpotsUrl = http://localhost:5040
+@reservationsUrl = http://localhost:5050
+@usersUrl = http://localhost:5070
+@notificationsUrl = http://localhost:5080
+
+###
+GET {{gatewayUrl}}
+
+###
+GET {{sagaUrl}}
+
+###
+GET {{availabilityUrl}}
+
+###
+GET {{mappingUrl}}
+
+###
+GET {{parkingSpotsUrl}}
+
+###
+GET {{reservationsUrl}}
+
+###
+GET {{usersUrl}}
+
+###
+GET {{notificationsUrl}}

@@ -1,0 +1,23 @@
+@url = http://localhost:5050
+@parkingSpotId = 00000000-0000-0000-0000-000000000000
+@reservationId = 00000000-0000-0000-0000-000000000000
+@accessToken = secret
+
+###
+GET {{url}}
+
+###
+POST {{url}}/reservations
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "parkingSpotId": "{{parkingSpotId}}",
+    "capacity": 2,
+    "licensePlate": "XYZ123",
+    "date": "2022-04-10"
+}
+
+###
+DELETE {{url}}/reservations/{{reservationId}}
+Authorization: Bearer {{accessToken}}

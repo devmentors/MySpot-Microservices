@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Micro.Messaging\Micro.Messaging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EasyNetQ" Version="7.2.0" />
+    <PackageReference Include="EasyNetQ.DI.Microsoft" Version="7.2.0" />
+    <PackageReference Include="EasyNetQ.Serialization.NewtonsoftJson" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Micro.Testing" />
+  </ItemGroup>
+
+</Project>

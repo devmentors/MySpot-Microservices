@@ -1,0 +1,16 @@
+
+@url = http://localhost:5080
+@userId = 00000000-0000-0000-0000-000000000001
+@template = account_created
+
+###
+GET {{url}}
+
+###
+POST {{url}}/emails/send
+Content-Type: application/json
+
+{
+    "userId": "{{userId}}",
+    "template": "{{template}}"
+}

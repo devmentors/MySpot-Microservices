@@ -1,0 +1,15 @@
+
+@url = http://localhost:5090
+
+###
+GET {{url}}
+
+###
+POST {{url}}/send-email
+Content-Type: application/json
+
+{
+    "receiver": "user1@myspot.io",
+    "title": "Test",
+    "body": "Lorem ipsum"
+}

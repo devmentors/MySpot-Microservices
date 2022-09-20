@@ -1,0 +1,23 @@
+
+@url = http://localhost:5020
+
+@resourceId = 00000000-0000-0000-0000-000000000000
+
+###
+GET {{url}}
+
+###
+GET {{url}}/resources
+
+###
+GET {{url}}/resources/{{resourceId}}
+
+###
+POST {{url}}/resources
+Content-Type: application/json
+
+{
+    "resourceId": "{{resourceId}}",
+    "capacity": 2,
+    "tags": ["tag1", "tag2"]
+}

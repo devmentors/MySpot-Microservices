@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MySpot.Services.Availability.Application\MySpot.Services.Availability.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MySpot.Services.Availability.Tests.Contract" />
+    <InternalsVisibleTo Include="MySpot.Services.Availability.Tests.EndToEnd" />
+    <InternalsVisibleTo Include="MySpot.Services.Availability.Tests.Integration" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,38 @@
+@url = http://localhost:5070
+@email = user1@myspot.io
+@password = secret
+@userId = 00000000-0000-0000-0000-000000000001
+
+###
+GET {{url}}
+
+###
+GET {{url}}/users/{{userId}}
+
+###
+POST {{url}}/sign-up
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "role": "user",
+    "jobTitle": "employee"
+}
+
+###
+# @name sign_in
+POST {{url}}/sign-in
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+###
+@accessToken = {{sign_in.response.body.$.accessToken}}
+
+###
+GET {{url}}/me
+Authorization: Bearer {{accessToken}}

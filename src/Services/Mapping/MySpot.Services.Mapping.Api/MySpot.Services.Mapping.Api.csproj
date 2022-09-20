@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Framework\Micro.Framework\Micro.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="certs\**" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+    
+</Project>
