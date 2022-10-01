@@ -5,7 +5,6 @@ using Micro.Messaging;
 using MySpot.Services.Notifications.Api.Clients;
 using MySpot.Services.Notifications.Api.Commands;
 using MySpot.Services.Notifications.Api.DAL;
-using MySpot.Services.Notifications.Api.Events.External;
 
 var builder = WebApplication
     .CreateBuilder(args)
@@ -29,7 +28,6 @@ app.MapPost("/emails/send", async (SendEmail command, IDispatcher dispatcher) =>
 }).WithTags("Emails").WithName("Send email");;
 
 app.Subscribe()
-    .Command<SendEmail>()
-    .Event<SignedUp>();
+    .Command<SendEmail>();
 
 app.UseMicroFramework().Run();

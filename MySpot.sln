@@ -109,8 +109,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySpot.Services.Users.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySpot.Services.Mapping.Tests.Contract", "src\Services\Mapping\MySpot.Services.Mapping.Tests.Contract\MySpot.Services.Mapping.Tests.Contract.csproj", "{13607A19-0B21-48E8-B748-6A368ADDC4DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Micro.DAL.Mongo", "src\Framework\Micro.DAL.Mongo\Micro.DAL.Mongo.csproj", "{2C1A410B-2F45-474A-B119-3A36EA0FB1FB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -280,10 +278,6 @@ Global
 		{13607A19-0B21-48E8-B748-6A368ADDC4DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13607A19-0B21-48E8-B748-6A368ADDC4DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13607A19-0B21-48E8-B748-6A368ADDC4DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C1A410B-2F45-474A-B119-3A36EA0FB1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C1A410B-2F45-474A-B119-3A36EA0FB1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C1A410B-2F45-474A-B119-3A36EA0FB1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C1A410B-2F45-474A-B119-3A36EA0FB1FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AD4D7F03-3A77-4F87-86E0-E5EF5354A0F4} = {1B0E4BA0-EEA8-4625-8B5D-5C95454EB4B8}
@@ -338,6 +332,5 @@ Global
 		{E72E2060-2C70-4DCF-AE42-95F6E3574876} = {5AB59D6E-D9F5-44BD-AED5-48EA261B9421}
 		{A061A249-6BFA-4016-B1E5-E9EA2D3BE68E} = {9A777BFA-6E01-4CED-B584-1787A39868C1}
 		{13607A19-0B21-48E8-B748-6A368ADDC4DB} = {8430B303-7B0A-4647-89E3-796EBA6ECD43}
-		{2C1A410B-2F45-474A-B119-3A36EA0FB1FB} = {1B1E4C1E-8B2A-4330-AAE2-DE2588C776F5}
 	EndGlobalSection
 EndGlobal

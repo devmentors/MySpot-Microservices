@@ -1,7 +1,4 @@
-﻿using Micro.Messaging.Brokers;
-using Micro.Messaging.RabbitMQ.Internals;
-using Micro.Observability.Tracing.Decorators;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
@@ -39,8 +36,6 @@ public static class Extensions
                     .AddEnvironmentVariableDetector()
                     .AddService(appName))
                 .AddSource(appName)
-                .AddSource(MessageBrokerTracingDecorator.ActivitySourceName)
-                .AddSource(MessageHandlerTracingDecorator.ActivitySourceName)
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddSqlClientInstrumentation();
@@ -72,14 +67,6 @@ public static class Extensions
                 }
             }
         });
-
-        return services;
-    }
-
-    public static IServiceCollection AddMessagingTracingDecorators(this IServiceCollection services)
-    {
-        services.TryDecorate<IMessageBroker, MessageBrokerTracingDecorator>();
-        services.TryDecorate<IMessageHandler, MessageHandlerTracingDecorator>();
 
         return services;
     }

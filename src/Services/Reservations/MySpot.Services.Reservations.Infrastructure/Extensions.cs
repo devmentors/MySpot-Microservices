@@ -6,9 +6,7 @@ using Micro.Transactions.Inbox;
 using Micro.Transactions.Outbox;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySpot.Services.Reservations.Application.Clients;
 using MySpot.Services.Reservations.Core.Repository;
-using MySpot.Services.Reservations.Infrastructure.Clients;
 using MySpot.Services.Reservations.Infrastructure.DAL;
 using MySpot.Services.Reservations.Infrastructure.DAL.Repositories;
 using MySpot.Services.Reservations.Infrastructure.Messaging;
@@ -23,7 +21,6 @@ public static class Extensions
             .AddScoped<IWeeklyReservationsRepository, WeeklyReservationsRepository>()
             .AddPostgres<ReservationsDbContext>(configuration)
             .AddSingleton<IMessagingExceptionPolicyResolver, MessagingExceptionPolicyResolver>()
-            .AddSingleton<IAvailabilityApiClient, AvailabilityApiClient>()
             .AddOutbox<ReservationsDbContext>(configuration)
             .AddInbox<ReservationsDbContext>(configuration)
             .AddMessagingErrorHandlingDecorators()

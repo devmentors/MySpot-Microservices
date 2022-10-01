@@ -1,7 +1,6 @@
 using Micro.API.AsyncApi;
 using MySpot.Services.Reservations.Application.Commands;
 using MySpot.Services.Reservations.Application.Events;
-using MySpot.Services.Reservations.Application.Events.External;
 using Saunter.Attributes;
 
 namespace MySpot.Services.Reservations.Infrastructure;
@@ -27,8 +26,4 @@ internal abstract class AsyncApi : IAsyncApi
     [Channel(nameof(remove_reservation), BindingsRef = "reservations")]
     [PublishOperation(typeof(RemoveReservation), Summary = "Remove reservation", OperationId = nameof(remove_reservation))]
     internal abstract void remove_reservation();
-    
-    [Channel(nameof(signed_up), BindingsRef = "users")]
-    [PublishOperation(typeof(SignedUp), Summary = "User has been created", OperationId = nameof(signed_up))]
-    internal abstract void signed_up();
 }

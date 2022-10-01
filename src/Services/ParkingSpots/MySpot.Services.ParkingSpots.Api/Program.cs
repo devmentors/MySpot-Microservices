@@ -18,13 +18,6 @@ app.MapGet("/ping", () => "pong").WithTags("API").WithName("Pong");
 app.MapGet("/parking-spots", (IParkingSpotsService service) => service.GetAllAsync())
     .WithTags("Parking spots").WithName("Get parking spots");
 
-app.MapPost("/parking-spots", async (ParkingSpot parkingSpot, IParkingSpotsService service) =>
-{
-    parkingSpot.Id = Guid.NewGuid();
-    await service.AddAsync(parkingSpot);
-    return Results.NoContent();
-}).WithTags("Parking spots").WithName("Add parking spot");
-
 app.MapPut("/parking-spots/{id:guid}", async (Guid id, ParkingSpot parkingSpot, IParkingSpotsService service) =>
 {
     parkingSpot.Id = id;

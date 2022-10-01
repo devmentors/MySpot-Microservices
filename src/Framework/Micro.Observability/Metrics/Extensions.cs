@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using Micro.Messaging.Brokers;
-using Micro.Observability.Metrics.Decorators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,11 +81,4 @@ public static class Extensions
             .Where(x => x.IsClass && x.GetCustomAttribute<MeterAttribute>() is not null)
             .Select(x => x.GetCustomAttribute<MeterAttribute>())
             .Where(x => x is not null);
-    
-    public static IServiceCollection AddMessagingMetricsDecorators(this IServiceCollection services)
-    {
-        services.TryDecorate<IMessageBroker, MessageBrokerMetricsDecorator>();
-
-        return services;
-    }
 }

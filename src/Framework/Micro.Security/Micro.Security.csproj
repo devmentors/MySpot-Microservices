@@ -9,9 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Micro\Micro.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="VaultSharp" Version="1.7.1" />
-  </ItemGroup>
   
 </Project>

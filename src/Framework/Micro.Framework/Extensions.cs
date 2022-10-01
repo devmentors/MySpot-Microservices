@@ -10,12 +10,12 @@ using Micro.HTTP;
 using Micro.HTTP.LoadBalancing;
 using Micro.HTTP.ServiceDiscovery;
 using Micro.Messaging;
+using Micro.Messaging.AzureServiceBus;
 using Micro.Messaging.RabbitMQ;
 using Micro.Observability.Logging;
 using Micro.Observability.Metrics;
 using Micro.Observability.Tracing;
 using Micro.Security;
-using Micro.Security.Vault;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,8 +25,6 @@ public static class Extensions
 {
     public static WebApplicationBuilder AddMicroFramework(this WebApplicationBuilder builder)
     {
-        builder.AddVault();
-        
         var appOptions = builder.Configuration.GetSection("app").BindOptions<AppOptions>();
         var appInfo = new AppInfo(appOptions.Name, appOptions.Version);
         builder.Services.AddSingleton(appInfo);
@@ -50,6 +48,7 @@ public static class Extensions
             .AddHeadersForwarding(builder.Configuration)
             .AddMessaging(builder.Configuration)
             .AddRabbitMQ(builder.Configuration)
+            .AddAzureServiceBus(builder.Configuration)
             .AddMetrics(builder.Configuration)
             .AddTracing(builder.Configuration)
             .AddConsul(builder.Configuration)
@@ -58,15 +57,7 @@ public static class Extensions
             .AddLogger(builder.Configuration);
 
         builder.Services
-            .AddHttpClient(builder.Configuration)
-            .AddContextHandler()
-            .AddVaultCertificatesHandler(builder.Configuration);
-        // .AddConsulHandler()
-        // .AddFabioHandler();
-
-        // builder.Services
-        //     .AddMessagingMetricsDecorators()
-        //     .AddMessagingTracingDecorators();
+            .AddHttpClient(builder.Configuration);
 
         return builder;
     }

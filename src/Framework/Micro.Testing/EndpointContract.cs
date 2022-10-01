@@ -25,7 +25,7 @@ public sealed class EndpointContract : IDisposable
         string pactsDirectory = "", string pactBrokerUrl = "http://localhost:9292", string apiKey = "")
     {
         Consumer = consumer;
-        Provider = provider;
+        Provider = $"{provider}_endpoints";
         Port = port;
         PactsDirectory = string.IsNullOrWhiteSpace(pactsDirectory)
             ? Path.Join("..", "..", "..", "..", "..", "pacts", "endpoints")
@@ -49,13 +49,13 @@ public sealed class EndpointContract : IDisposable
             DefaultJsonSettings = SerializerSettings
         };
 
-        Pact = PactNet.Pact.V3(consumer, provider, config).WithHttpInteractions();
+        Pact = PactNet.Pact.V3(Consumer, Provider, config).WithHttpInteractions(Port);
         Verifier = new PactVerifier(new PactVerifierConfig
         {
             Outputters = new[] {new XUnitOutput(output)}
         });
 
-        _publisher = new PactBrokerPublisher(consumer, provider, output, pactBrokerUrl, apiKey);
+        _publisher = new PactBrokerPublisher(Consumer, Provider, output, pactBrokerUrl, apiKey);
     }
 
     public async Task PublishToPactBrokerAsync(string version)

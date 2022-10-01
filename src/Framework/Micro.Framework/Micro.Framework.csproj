@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Micro.API\Micro.API.csproj" />
       <ProjectReference Include="..\Micro.Auth\Micro.Auth.csproj" />
-      <ProjectReference Include="..\Micro.DAL.Mongo\Micro.DAL.Mongo.csproj" />
       <ProjectReference Include="..\Micro.DAL.Postgres\Micro.DAL.Postgres.csproj" />
       <ProjectReference Include="..\Micro.HTTP\Micro.HTTP.csproj" />
       <ProjectReference Include="..\Micro.Messaging.AzureServiceBus\Micro.Messaging.AzureServiceBus.csproj" />

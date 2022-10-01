@@ -3,7 +3,6 @@ using Micro.Handlers;
 using Micro.Messaging;
 using MySpot.Services.Reservations.Application;
 using MySpot.Services.Reservations.Application.Commands;
-using MySpot.Services.Reservations.Application.Events.External;
 using MySpot.Services.Reservations.Application.Queries;
 using MySpot.Services.Reservations.Core;
 using MySpot.Services.Reservations.Infrastructure;
@@ -44,8 +43,7 @@ app.MapDelete("/reservations/{id:guid}", async (Guid id, IDispatcher dispatcher,
 app.UseMicroFramework()
     .Subscribe()
     .Command<MakeReservation>()
-    .Command<RemoveReservation>()
-    .Event<SignedUp>();
+    .Command<RemoveReservation>();
 
 app.Run();
 
