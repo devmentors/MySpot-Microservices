@@ -13,7 +13,7 @@ internal sealed class GetWeeklyReservationsHandler : IQueryHandler<GetWeeklyRese
     private readonly DbSet<WeeklyReservations> _weeklyReservations;
     private readonly IClock _clock;
 
-    public GetWeeklyReservationsHandler(ReservationsDbContext context, IClock clock)
+    public GetWeeklyReservationsHandler(ReservationsWriteDbContext context, IClock clock)
     {
         _weeklyReservations = context.WeeklyReservations;
         _clock = clock;
@@ -26,8 +26,6 @@ internal sealed class GetWeeklyReservationsHandler : IQueryHandler<GetWeeklyRese
 
         return _weeklyReservations
             .AsNoTracking()
-            .Where(x => x.UserId == query.UserId && x.Week == week)
-            .Include(x => x.Reservations)
             .Select(x => x.AsDto())
             .SingleOrDefaultAsync(cancellationToken);
     }

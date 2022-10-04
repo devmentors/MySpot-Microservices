@@ -19,10 +19,10 @@ public static class Extensions
         => services
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IWeeklyReservationsRepository, WeeklyReservationsRepository>()
-            .AddPostgres<ReservationsDbContext>(configuration)
+            .AddPostgres<ReservationsWriteDbContext>(configuration)
             .AddSingleton<IMessagingExceptionPolicyResolver, MessagingExceptionPolicyResolver>()
-            .AddOutbox<ReservationsDbContext>(configuration)
-            .AddInbox<ReservationsDbContext>(configuration)
+            .AddOutbox<ReservationsWriteDbContext>(configuration)
+            .AddInbox<ReservationsWriteDbContext>(configuration)
             .AddMessagingErrorHandlingDecorators()
             .AddTransactionalDecorators()
             .AddOutboxInstantSenderDecorators();

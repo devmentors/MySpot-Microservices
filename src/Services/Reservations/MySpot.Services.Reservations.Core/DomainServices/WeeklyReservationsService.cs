@@ -21,15 +21,9 @@ public sealed class WeeklyReservationsService : IWeeklyReservationsService
     public Reservation Reserve(WeeklyReservations currentReservations, WeeklyReservations? lastWeekReservations,
         ParkingSpotId parkingSpotId, Capacity capacity, LicensePlate licensePlate, Date date, string? note = null)
     {
-        if (lastWeekReservations is not null)
+        if (lastWeekReservations?.HasAnyIncorrectReservation() is true)
         {
-            var hadAnyIncorrectReservation = lastWeekReservations.Reservations
-                .Any(r => r.State == ReservationState.Incorrect);
-
-            if (hadAnyIncorrectReservation)
-            {
-                throw new CannotMakeReservationException(parkingSpotId);
-            }
+            throw new CannotMakeReservationException(parkingSpotId);
         }
 
         var reservation = new Reservation(ReservationId.Create(), parkingSpotId, capacity, licensePlate, date, note);

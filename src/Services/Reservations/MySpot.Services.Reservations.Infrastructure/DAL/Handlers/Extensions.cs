@@ -9,16 +9,16 @@ internal static class Extensions
         => new()
         {
             Id = entity.Id,
-            UserId = entity.UserId,
-            Reservations = entity.Reservations.Select(x => new ReservationDto
-            {
-                Id = x.Id,
-                ParkingSpotId = x.ParkingSpotId,
-                Capacity = x.Capacity,
-                Date = x.Date.Value.DateTime,
-                LicensePlate = x.LicensePlate,
-                State = x.State,
-                Note = x.Note
-            }).ToList()
+            // UserId = entity.UserId,
+            // Reservations = entity.Reservations.Select(x => new ReservationDto
+            // {
+            //     Id = x.Id,
+            //     ParkingSpotId = x.ParkingSpotId,
+            //     Capacity = x.Capacity,
+            //     Date = x.Date.Value.DateTime,
+            //     LicensePlate = x.LicensePlate,
+            //     State = x.State,
+            //     Note = x.Note
+            // }).ToList()
         };
 }

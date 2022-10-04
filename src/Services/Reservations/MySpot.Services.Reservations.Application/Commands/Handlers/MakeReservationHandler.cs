@@ -46,7 +46,7 @@ internal sealed class MakeReservationHandler : ICommandHandler<MakeReservation>
         var reservation = _weeklyReservationsService.Reserve(currentReservations, lastWeekReservations, parkingSpotId,
             capacity, licensePlate, date, note);
         await _weeklyReservationsRepository.UpdateAsync(currentReservations, cancellationToken);
-        await _messageBroker.SendAsync(new ParkingSpotReserved(reservation.Id, reservation.ParkingSpotId,
-            userId, reservation.Date, reservation.Capacity), cancellationToken);
+        await _messageBroker.SendAsync(new ParkingSpotReserved(reservation.Id, parkingSpotId,
+            userId, date, capacity), cancellationToken);
     }
 }

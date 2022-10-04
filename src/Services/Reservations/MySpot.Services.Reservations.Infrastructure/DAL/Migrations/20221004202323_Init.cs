@@ -57,9 +57,9 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Week = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    JobTitle = table.Column<string>(type: "text", nullable: false),
+                    JobTitle = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Week = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     Version = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -69,8 +69,7 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                         name: "FK_WeeklyReservations_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -78,12 +77,11 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParkingSpotId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Capacity = table.Column<int>(type: "integer", nullable: false),
-                    LicensePlate = table.Column<string>(type: "text", nullable: false),
-                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Note = table.Column<string>(type: "text", nullable: true),
-                    State = table.Column<string>(type: "text", nullable: false),
+                    ParkingSpotId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Capacity = table.Column<int>(type: "integer", nullable: true),
+                    LicensePlate = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    State = table.Column<string>(type: "text", nullable: true),
                     WeeklyReservationsId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -102,10 +100,9 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                 column: "WeeklyReservationsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WeeklyReservations_UserId_Week",
+                name: "IX_WeeklyReservations_UserId",
                 table: "WeeklyReservations",
-                columns: new[] { "UserId", "Week" },
-                unique: true);
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

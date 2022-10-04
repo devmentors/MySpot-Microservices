@@ -9,12 +9,12 @@ namespace MySpot.Services.Reservations.Tests.Integration;
 [ExcludeFromCodeCoverage]
 internal sealed class TestDatabase : IDisposable
 {
-    public ReservationsDbContext Context { get; }
+    public ReservationsWriteDbContext Context { get; }
 
     public TestDatabase()
     {
         var connectionString = $"Host=localhost;Database=myspot-reservations-tests-{Guid.NewGuid():N};Username=postgres;Password=";
-        Context = new ReservationsDbContext(new DbContextOptionsBuilder<ReservationsDbContext>().UseNpgsql(connectionString).Options);
+        Context = new ReservationsWriteDbContext(new DbContextOptionsBuilder<ReservationsWriteDbContext>().UseNpgsql(connectionString).Options);
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 

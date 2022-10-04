@@ -10,14 +10,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
 {
-    [DbContext(typeof(ReservationsDbContext))]
-    partial class ReservationsDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ReservationsWriteDbContext))]
+    partial class ReservationsWriteDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -79,25 +79,25 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Capacity")
-                        .HasColumnType("integer");
+                    b.Property<int?>("Capacity")
+                        .HasColumnType("integer")
+                        .HasColumnName("Capacity");
 
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset?>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Date");
 
                     b.Property<string>("LicensePlate")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("LicensePlate");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("ParkingSpotId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid?>("ParkingSpotId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ParkingSpotId");
 
                     b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("State");
 
                     b.Property<Guid?>("WeeklyReservationsId")
                         .HasColumnType("uuid");
@@ -128,24 +128,24 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Version")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("Week")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("_jobTitle")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("JobTitle");
 
+                    b.Property<Guid?>("_userId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("UserId");
+
+                    b.Property<DateTimeOffset?>("_week")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Week");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Week")
-                        .IsUnique();
+                    b.HasIndex("_userId");
 
                     b.ToTable("WeeklyReservations");
                 });
@@ -153,7 +153,7 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
             modelBuilder.Entity("MySpot.Services.Reservations.Core.Entities.Reservation", b =>
                 {
                     b.HasOne("MySpot.Services.Reservations.Core.Entities.WeeklyReservations", null)
-                        .WithMany("Reservations")
+                        .WithMany("_reservations")
                         .HasForeignKey("WeeklyReservationsId");
                 });
 
@@ -161,14 +161,12 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Migrations
                 {
                     b.HasOne("MySpot.Services.Reservations.Core.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("_userId");
                 });
 
             modelBuilder.Entity("MySpot.Services.Reservations.Core.Entities.WeeklyReservations", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("_reservations");
                 });
 #pragma warning restore 612, 618
         }

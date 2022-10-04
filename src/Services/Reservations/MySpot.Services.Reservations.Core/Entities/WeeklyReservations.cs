@@ -10,9 +10,8 @@ public class WeeklyReservations : AggregateRoot
     private readonly JobTitle _jobTitle = JobTitle.None;
     private readonly HashSet<Reservation> _reservations = new();
 
-    public UserId UserId { get; private set; } = null!;
-    public Week Week { get; private set; } = null!;
-    public IEnumerable<Reservation> Reservations => _reservations;
+    private readonly UserId _userId;
+    private readonly Week _week;
     
     private WeeklyReservations()
     {
@@ -21,15 +20,15 @@ public class WeeklyReservations : AggregateRoot
     public WeeklyReservations(AggregateId id, User user, Week week)
     {
         Id = id;
-        UserId = user.Id;
-        Week = week;
+        _userId = user.Id;
+        _week = week;
         _jobTitle = user.JobTitle;
         IncrementVersion();
     }
 
     internal void AddReservation(Reservation reservation, Date now, IEnumerable<IReservationPolicy> policies)
     {
-        if (reservation.Date <= now ||  reservation.Date < Week.From || reservation.Date > Week.To)
+        if (reservation.Date <= now ||  reservation.Date < _week.From || reservation.Date > _week.To)
         {
             throw new InvalidReservationDateException(reservation.Date.Value);
         }
@@ -54,13 +53,11 @@ public class WeeklyReservations : AggregateRoot
         IncrementVersion();
     }
 
-    public Reservation RemoveReservation(ReservationId reservationId)
+    public void RemoveReservation(ReservationId reservationId)
     {
         var reservation = GetReservation(reservationId);
         _reservations.Remove(reservation);
         IncrementVersion();
-
-        return reservation;
     }
 
     public void RemoveReservations(IEnumerable<Reservation> reservations)
@@ -96,6 +93,9 @@ public class WeeklyReservations : AggregateRoot
         reservation.MarkAsIncorrect();
         IncrementVersion();
     }
+
+    public bool HasAnyIncorrectReservation()
+        => _reservations.Any(r => r.State == ReservationState.Incorrect);
 
     private Reservation GetReservation(ReservationId reservationId)
     {

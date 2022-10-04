@@ -26,10 +26,10 @@ internal sealed class RemoveReservationHandler : ICommandHandler<RemoveReservati
         {
             throw new WeeklyReservationsForCurrentWeekNotFoundException();
         }
-
-        var reservation = weeklyReservations.RemoveReservation(reservationId);
+        
+        weeklyReservations.RemoveReservation(reservationId);
         await _weeklyReservationsRepository.UpdateAsync(weeklyReservations, cancellationToken);
-        await _messageBroker.SendAsync(new ParkingSpotReservationRemoved(reservation.Id, reservation.ParkingSpotId,
-            reservation.Date), cancellationToken);
+        // await _messageBroker.SendAsync(new ParkingSpotReservationRemoved(reservation.Id, reservation.ParkingSpotId,
+        //     reservation.Date), cancellationToken);
     }
 }

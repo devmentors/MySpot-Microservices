@@ -10,10 +10,10 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Repositories;
 internal sealed class WeeklyReservationsRepository : IWeeklyReservationsRepository
 {
     private readonly DbSet<WeeklyReservations> _weeklyReservations;
-    private readonly ReservationsDbContext _context;
+    private readonly ReservationsWriteDbContext _context;
     private readonly IClock _clock;
 
-    public WeeklyReservationsRepository(ReservationsDbContext context, IClock clock)
+    public WeeklyReservationsRepository(ReservationsWriteDbContext context, IClock clock)
     {
         _weeklyReservations = context.WeeklyReservations;
         _context = context;
@@ -44,7 +44,8 @@ internal sealed class WeeklyReservationsRepository : IWeeklyReservationsReposito
     {
         var week = new Week(date);
         var query = _weeklyReservations
-            .Where(x => x.UserId == userId && x.Week == week);
+            .Where(x => EF.Property<UserId>(x, "_userId") == userId 
+                        && EF.Property<Week>(x, "_week") == week);
 
         if (withoutTracking)
         {
@@ -52,7 +53,7 @@ internal sealed class WeeklyReservationsRepository : IWeeklyReservationsReposito
         }
         
         return query
-            .Include(x => x.Reservations)
+            .Include("_reservations")
             .SingleOrDefaultAsync(cancellationToken);
     }
 }

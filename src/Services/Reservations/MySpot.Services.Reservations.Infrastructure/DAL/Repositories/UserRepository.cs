@@ -7,10 +7,10 @@ namespace MySpot.Services.Reservations.Infrastructure.DAL.Repositories;
 
 internal sealed class UserRepository : IUserRepository
 {
-    private readonly ReservationsDbContext _context;
+    private readonly ReservationsWriteDbContext _context;
     private readonly DbSet<User> _users;
 
-    public UserRepository(ReservationsDbContext context)
+    public UserRepository(ReservationsWriteDbContext context)
     {
         _users = context.Users;
         _context = context;
