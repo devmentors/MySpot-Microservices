@@ -20,6 +20,7 @@ public static class Extensions
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IWeeklyReservationsRepository, WeeklyReservationsRepository>()
             .AddPostgres<ReservationsWriteDbContext>(configuration)
+            .AddPostgres<ReservationsReadDbContext>(configuration)
             .AddSingleton<IMessagingExceptionPolicyResolver, MessagingExceptionPolicyResolver>()
             .AddOutbox<ReservationsWriteDbContext>(configuration)
             .AddInbox<ReservationsWriteDbContext>(configuration)

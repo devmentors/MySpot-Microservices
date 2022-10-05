@@ -5,13 +5,13 @@ namespace MySpot.Services.Reservations.Core.Entities;
 
 public class Reservation
 {
-    public ReservationId Id { get; private set; } = null!;
-    internal ParkingSpotId ParkingSpotId { get; private set; } = null!;
-    internal Capacity Capacity { get; private set;} = null!;
-    internal LicensePlate LicensePlate { get; private set; } = null!;
-    internal Date Date { get; private set; }  = null!;
+    public ReservationId Id { get; private set; }
+    internal ParkingSpotId ParkingSpotId { get; private set; }
+    internal Capacity Capacity { get; private set;}
+    internal LicensePlate LicensePlate { get; private set; }
+    internal Date Date { get; private set; }
     internal string? Note { get; private set; }
-    internal ReservationState State { get; private set; } = null!;
+    internal ReservationState State { get; private set; }
 
     private Reservation()
     {

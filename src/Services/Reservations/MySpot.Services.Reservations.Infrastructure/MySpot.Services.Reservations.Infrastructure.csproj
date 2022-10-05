@@ -19,4 +19,13 @@
     <InternalsVisibleTo Include="MySpot.Services.Reservations.Tests.Contract" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <EmbeddedResource Remove="DAL\ReadModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="DAL\ReadModels\**" />
+  </ItemGroup>
+
 </Project>

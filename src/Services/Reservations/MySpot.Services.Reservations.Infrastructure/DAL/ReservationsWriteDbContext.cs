@@ -2,6 +2,7 @@ using Micro.Transactions.Inbox;
 using Micro.Transactions.Outbox;
 using Microsoft.EntityFrameworkCore;
 using MySpot.Services.Reservations.Core.Entities;
+using MySpot.Services.Reservations.Infrastructure.DAL.Configurations;
 
 namespace MySpot.Services.Reservations.Infrastructure.DAL;
 
@@ -19,6 +20,8 @@ internal class ReservationsWriteDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+        modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new WeeklyReservationsConfiguration());
     }
 }
