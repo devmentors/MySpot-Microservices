@@ -20,7 +20,6 @@ public static class Extensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IWeeklyReservationsRepository, WeeklyReservationsRepository>()
             .AddPostgres<ReservationsDbContext>(configuration)
             .AddSingleton<IMessagingExceptionPolicyResolver, MessagingExceptionPolicyResolver>()
             .AddSingleton<IAvailabilityApiClient, AvailabilityApiClient>()
