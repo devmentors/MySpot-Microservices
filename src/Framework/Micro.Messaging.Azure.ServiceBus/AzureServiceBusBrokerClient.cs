@@ -3,12 +3,12 @@ using Azure.Messaging.ServiceBus;
 using Humanizer;
 using Micro.Abstractions;
 using Micro.Contexts.Accessors;
-using Micro.Messaging.AzureServiceBus.Internals;
+using Micro.Messaging.Azure.ServiceBus.Internals;
 using Micro.Messaging.Clients;
 using Micro.Serialization;
 using Microsoft.Extensions.Logging;
 
-namespace Micro.Messaging.AzureServiceBus;
+namespace Micro.Messaging.Azure.ServiceBus;
 
 internal sealed class AzureServiceBusBrokerClient : IMessageBrokerClient
 {
@@ -34,8 +34,8 @@ internal sealed class AzureServiceBusBrokerClient : IMessageBrokerClient
         var messageContext = messageEnvelope.Context;
         _messageContextAccessor.MessageContext = messageContext;
         var messageName = _names.GetOrAdd(typeof(T), typeof(T).Name.Underscore());
-        _logger.LogInformation("Sending a message: {MessageName}  [ID: {MessageId}, Correlation ID: {CorrelationId}]...",
-            messageName, messageContext.MessageId, messageContext.Context.CorrelationId);
+        _logger.LogInformation("Sending a message: {MessageName}  [ID: {MessageId}, Activity ID: {ActivityId}]...",
+            messageName, messageContext.MessageId, messageContext.Context.ActivityId);
 
         var topicName = _conventions.GetTopicNamingConvention(typeof(T));
         var sender = _client.CreateSender(topicName);
@@ -43,7 +43,7 @@ internal sealed class AzureServiceBusBrokerClient : IMessageBrokerClient
 
         var serviceBusMessage = new ServiceBusMessage(json);
         serviceBusMessage.MessageId = messageContext.MessageId;
-        serviceBusMessage.CorrelationId = messageContext.Context.CorrelationId;
+        serviceBusMessage.CorrelationId = messageContext.Context.ActivityId;
         serviceBusMessage.ApplicationProperties.Add("type", typeof(T).Name.Underscore());
         
         await sender.SendMessageAsync(serviceBusMessage, cancellationToken);

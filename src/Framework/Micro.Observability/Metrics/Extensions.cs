@@ -5,16 +5,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OpenTelemetry;
 using OpenTelemetry.Metrics;
 
 namespace Micro.Observability.Metrics;
 
-public static class Extensions
+internal static class Extensions
 {
     private const string ConsoleExporter = "console";
     private const string PrometheusExporter = "prometheus";
 
-    public static IServiceCollection AddMetrics(this IServiceCollection services,
+    public static OpenTelemetryBuilder AddMetrics(this OpenTelemetryBuilder openTelemetry,
+        IServiceCollection services,
         IConfiguration configuration)
     {
         var section = configuration.GetSection("metrics");
@@ -23,16 +25,16 @@ public static class Extensions
 
         if (!options.Enabled)
         {
-            return services;
+            return openTelemetry;
         }
 
-        return services
-            .AddOpenTelemetryMetrics(builder =>
+        return openTelemetry
+            .WithMetrics(builder =>
             {
                 builder.AddAspNetCoreInstrumentation();
                 builder.AddHttpClientInstrumentation();
                 builder.AddRuntimeInstrumentation();
-                
+
                 foreach (var attribute in GetMeterAttributes())
                 {
                     if (attribute is not null)

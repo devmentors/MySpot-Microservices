@@ -338,3 +338,5 @@ appsettings.local.json
 module.*.local.json
 
 pacts/
+
+.tye/

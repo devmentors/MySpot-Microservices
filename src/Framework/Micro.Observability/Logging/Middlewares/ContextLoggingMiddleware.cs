@@ -16,7 +16,7 @@ internal sealed class ContextLoggingMiddleware : IMiddleware
     public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {
         var context = _contextProvider.Current();
-        using (LogContext.PushProperty("CorrelationId", context.CorrelationId))
+        using (LogContext.PushProperty("ActivityId", context.ActivityId))
         {
             await next(httpContext);
         }

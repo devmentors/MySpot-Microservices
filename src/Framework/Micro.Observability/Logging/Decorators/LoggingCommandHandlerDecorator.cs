@@ -28,10 +28,10 @@ internal sealed class LoggingCommandHandlerDecorator<T> : ICommandHandler<T> whe
     {
         var context = _contextProvider.Current();
         var name = Names.GetOrAdd(typeof(T), command.GetType().Name.Underscore());
-        _logger.LogInformation("Handling a command: {CommandName} [Trace ID: {TraceId}, Correlation ID: {CorrelationId}, Message ID: {MessageId}, Causation ID: {CausationId}, User ID: {UserId}']...",
-            name, context.TraceId, context.CorrelationId, context.MessageId, context.CausationId, context.UserId ?? string.Empty);
+        _logger.LogInformation("Handling a command: {CommandName} [Activity ID: {ActivityId}, Message ID: {MessageId}, User ID: {UserId}']...",
+            name, context.ActivityId, context.MessageId, context.UserId);
         await _handler.HandleAsync(command, cancellationToken);
-        _logger.LogInformation("Handled a command: {CommandName} [Trace ID: {TraceId}, Correlation ID: {CorrelationId}, Message ID: {MessageId}, Causation ID: {CausationId}, User ID: {UserId}]",
-            name, context.TraceId, context.CorrelationId, context.MessageId, context.CausationId, context.UserId ?? string.Empty);
+        _logger.LogInformation("Handled a command: {CommandName} [Activity ID: {ActivityId}, Message ID: {MessageId}, User ID: {UserId}]",
+            name, context.ActivityId, context.MessageId, context.UserId);
     }
 }

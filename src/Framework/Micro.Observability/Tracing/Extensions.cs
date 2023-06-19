@@ -9,13 +9,13 @@ using OpenTelemetry.Trace;
 
 namespace Micro.Observability.Tracing;
 
-public static class Extensions
+internal static class Extensions
 {
     private const string ConsoleExporter = "console";
     private const string JaegerExporter = "jaeger";
 
-    public static IServiceCollection AddTracing(this IServiceCollection services,
-        IConfiguration configuration)
+    public static OpenTelemetryBuilder AddTracing(this OpenTelemetryBuilder openTelemetry,
+        IServiceCollection services, IConfiguration configuration)
     {
         var tracingSection = configuration.GetSection("tracing");
         var tracingOptions = tracingSection.BindOptions<TracingOptions>();
@@ -23,7 +23,7 @@ public static class Extensions
 
         if (!tracingOptions.Enabled)
         {
-            return services;
+            return openTelemetry;
         }
 
         var appName = configuration.BindOptions<AppOptions>("app").Name;
@@ -32,48 +32,47 @@ public static class Extensions
             throw new InvalidOperationException("Application name cannot be empty when using the tracing.");
         }
 
-        services.AddOpenTelemetryTracing(builder =>
-        {
-            builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddTelemetrySdk()
-                    .AddEnvironmentVariableDetector()
-                    .AddService(appName))
-                .AddSource(appName)
-                .AddSource(MessageBrokerTracingDecorator.ActivitySourceName)
-                .AddSource(MessageHandlerTracingDecorator.ActivitySourceName)
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddSqlClientInstrumentation();
-
-            switch (tracingOptions.Exporter.ToLowerInvariant())
+        return openTelemetry
+            .WithTracing(builder =>
             {
-                case ConsoleExporter:
+                builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
+                        .AddTelemetrySdk()
+                        .AddEnvironmentVariableDetector()
+                        .AddService(appName))
+                    .AddSource(appName)
+                    .AddSource(MessageBrokerTracingDecorator.ActivitySourceName)
+                    .AddSource(MessageHandlerTracingDecorator.ActivitySourceName)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddSqlClientInstrumentation();
+
+                switch (tracingOptions.Exporter.ToLowerInvariant())
                 {
-                    builder.AddConsoleExporter();
-                    break;
-                }
-                case JaegerExporter:
-                {
-                    var jaegerOptions = tracingOptions.Jaeger;
-                    builder.AddJaegerExporter(jaeger =>
+                    case ConsoleExporter:
                     {
-                        jaeger.AgentHost = jaegerOptions.AgentHost;
-                        jaeger.AgentPort = jaegerOptions.AgentPort;
-                        jaeger.MaxPayloadSizeInBytes = jaegerOptions.MaxPayloadSizeInBytes;
-                        if (!Enum.TryParse<ExportProcessorType>(jaegerOptions.ExportProcessorType, true,
-                                out var exportProcessorType))
+                        builder.AddConsoleExporter();
+                        break;
+                    }
+                    case JaegerExporter:
+                    {
+                        var jaegerOptions = tracingOptions.Jaeger;
+                        builder.AddJaegerExporter(jaeger =>
                         {
-                            exportProcessorType = ExportProcessorType.Batch;
-                        }
+                            jaeger.AgentHost = jaegerOptions.AgentHost;
+                            jaeger.AgentPort = jaegerOptions.AgentPort;
+                            jaeger.MaxPayloadSizeInBytes = jaegerOptions.MaxPayloadSizeInBytes;
+                            if (!Enum.TryParse<ExportProcessorType>(jaegerOptions.ExportProcessorType, true,
+                                    out var exportProcessorType))
+                            {
+                                exportProcessorType = ExportProcessorType.Batch;
+                            }
 
-                        jaeger.ExportProcessorType = exportProcessorType;
-                    });
-                    break;
+                            jaeger.ExportProcessorType = exportProcessorType;
+                        });
+                        break;
+                    }
                 }
-            }
-        });
-
-        return services;
+            });
     }
 
     public static IServiceCollection AddMessagingTracingDecorators(this IServiceCollection services)

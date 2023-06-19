@@ -1,4 +1,4 @@
-namespace Micro.Messaging.AzureServiceBus.Internals;
+namespace Micro.Messaging.Azure.ServiceBus.Internals;
 
 public interface IBrokerConventions
 {

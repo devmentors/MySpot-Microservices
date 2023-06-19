@@ -41,15 +41,11 @@ internal sealed class RabbitMqMessageSubscriber : IMessageSubscriber
             (message, cancellationToken) => _messageHandler.HandleAsync(handler, message, cancellationToken),
             configuration =>
             {
-                if (!string.IsNullOrWhiteSpace(messageAttribute.Topic))
-                {
-                    configuration.WithTopic(messageAttribute.Topic);
-                }
+                var topic = string.IsNullOrWhiteSpace(messageAttribute.Topic)
+                    ? typeof(T).Name.ToMessageKey()
+                    : messageAttribute.Topic;
 
-                if (!string.IsNullOrWhiteSpace(messageAttribute.Queue))
-                {
-                    configuration.WithQueueName(messageAttribute.Queue);
-                }
+                configuration.WithTopic(topic);
             });
 
         return this;

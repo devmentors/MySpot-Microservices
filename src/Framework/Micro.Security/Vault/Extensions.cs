@@ -33,12 +33,8 @@ public static class Extensions
         
         VerifyOptions(options);
         builder.Services.AddVault(options);
+        builder.Configuration.AddVaultAsync(options).GetAwaiter().GetResult();
         
-        builder.Host.ConfigureAppConfiguration((_, configurationBuilder) =>
-        {
-            configurationBuilder.AddVaultAsync(options).GetAwaiter().GetResult();
-        });
-
         return builder;
     }
 
@@ -97,7 +93,7 @@ public static class Extensions
             var parser = new JsonParser();
             var json = JsonConvert.SerializeObject(secret);
             var data = parser.Parse(json);
-            var source = new MemoryConfigurationSource {InitialData = data};
+            var source = new MemoryConfigurationSource {InitialData = data!};
             builder.Add(source);
         }
 
@@ -126,7 +122,7 @@ public static class Extensions
 
         if (configuration.Any())
         {
-            var source = new MemoryConfigurationSource {InitialData = configuration};
+            var source = new MemoryConfigurationSource {InitialData = configuration!};
             builder.Add(source);
         }
     }

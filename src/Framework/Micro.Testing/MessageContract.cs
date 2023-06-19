@@ -25,7 +25,7 @@ public sealed class MessageContract : IDisposable
         string pactBrokerUrl = "http://localhost:9292", string apiKey = "")
     {
         Consumer = consumer;
-        Provider = provider;
+        Provider = $"{provider}_messages";
         PactsDirectory = string.IsNullOrWhiteSpace(pactsDirectory)
             ? Path.Join("..", "..", "..", "..", "..", "pacts", "messages")
             : pactsDirectory;
@@ -48,13 +48,13 @@ public sealed class MessageContract : IDisposable
             DefaultJsonSettings = SerializerSettings
         };
 
-        Pact = PactNet.Pact.V3(consumer, provider, config).WithMessageInteractions();
+        Pact = PactNet.Pact.V3(Consumer, Provider, config).WithMessageInteractions();
         Verifier = new PactVerifier(new PactVerifierConfig
         {
             Outputters = new[] {new XUnitOutput(output)}
         });
         
-        _publisher = new PactBrokerPublisher(consumer, provider, output, pactBrokerUrl, apiKey);
+        _publisher = new PactBrokerPublisher(Consumer, Provider, output, pactBrokerUrl, apiKey);
     }
 
     public IPactVerifierMessagingProvider MessagingProvider()
@@ -73,7 +73,7 @@ public sealed class MessageContract : IDisposable
     }
     
     public FileInfo GetPactFile() => GetPactFile($"{Consumer}-{Provider}");
-    
+
     public FileInfo GetPactFile(string pactName)
     {
         var path = Path.Join(PactsDirectory, $"{pactName}.json");

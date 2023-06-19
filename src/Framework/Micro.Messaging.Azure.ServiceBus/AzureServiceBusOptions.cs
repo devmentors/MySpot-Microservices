@@ -1,4 +1,4 @@
-namespace Micro.Messaging.AzureServiceBus;
+namespace Micro.Messaging.Azure.ServiceBus;
 
 public sealed class AzureServiceBusOptions
 {

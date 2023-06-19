@@ -27,8 +27,8 @@ internal sealed class OutboxMessageBroker : IMessageBroker
         var messageId = Guid.NewGuid().ToString("N");
         var context = _contextProvider.Current();
         var messageName = _names.GetOrAdd(typeof(T), message.GetType().Name.Underscore());
-        _logger.LogInformation("Saving a message to outbox: {MessageName}  [ID: {MessageId}, Correlation ID: {CorrelationId}]...",
-            messageName, messageId, context.CorrelationId);
+        _logger.LogInformation("Saving a message to outbox: {MessageName}  [ID: {MessageId}, Activity ID: {ActivityId}]...",
+            messageName, messageId, context.ActivityId);
         var messageEnvelope = new MessageEnvelope<T>(message, new MessageContext(messageId, context));
         await _outbox.SaveAsync(messageEnvelope, cancellationToken);
     }

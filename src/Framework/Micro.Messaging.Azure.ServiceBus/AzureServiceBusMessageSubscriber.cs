@@ -3,13 +3,13 @@ using Azure.Messaging.ServiceBus;
 using Micro.Abstractions;
 using Micro.Attributes;
 using Micro.Handlers;
-using Micro.Messaging.AzureServiceBus.Internals;
+using Micro.Messaging.Azure.ServiceBus.Internals;
 using Micro.Messaging.Subscribers;
 using Micro.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Micro.Messaging.AzureServiceBus;
+namespace Micro.Messaging.Azure.ServiceBus;
 
 public class AzureServiceBusMessageSubscriber : IMessageSubscriber
 {

@@ -10,8 +10,6 @@ namespace Micro.Messaging.RabbitMQ.Internals;
 internal sealed class CustomMessageSerializationStrategy : IMessageSerializationStrategy
 {
     private const string ActivityIdKey = "activity-id";
-    private const string CausationIdKey = "causation-id";
-    private const string TraceIdKey = "trace-id";
     private const string UserIdKey = "user-id";
     
     private readonly ConcurrentDictionary<Type, string> _typeNames = new();
@@ -40,31 +38,29 @@ internal sealed class CustomMessageSerializationStrategy : IMessageSerialization
         {
             messageProperties.MessageId = messageContext.MessageId;
         }
-        
-        if (!string.IsNullOrWhiteSpace(messageContext?.Context.CorrelationId))
-        {
-            messageProperties.CorrelationId = messageContext.Context.CorrelationId;
-        }
-        
-        if (!string.IsNullOrWhiteSpace(Activity.Current?.Id))
-        {
-            messageProperties.Headers.TryAdd(ActivityIdKey, Activity.Current.Id);
-        }
-        
-        if (!string.IsNullOrWhiteSpace(messageContext?.Context.TraceId))
-        {
-            messageProperties.Headers.TryAdd(TraceIdKey, messageContext.Context.TraceId);
-        }
-        
-        // Access the context for the external message (parent) that might be currently being handled
-        if (!string.IsNullOrWhiteSpace(_contextAccessor.Context?.CausationId))
-        {
-            messageProperties.Headers.TryAdd(CausationIdKey, _contextAccessor.Context.CausationId);
-        }
-        
+
         if (!string.IsNullOrWhiteSpace(messageContext?.Context.UserId))
         {
             messageProperties.Headers.TryAdd(UserIdKey, messageContext.Context.UserId);
+        }
+
+        var isNewActivity = Activity.Current is null;
+        var activity = Activity.Current ?? new Activity("message_serializer");
+        if (!string.IsNullOrWhiteSpace(messageContext?.Context.ActivityId))
+        {
+            activity.SetParentId(messageContext.Context.ActivityId);
+        }
+
+        if (isNewActivity)
+        {
+            activity.Start();
+        }
+        
+        messageProperties.Headers.TryAdd(ActivityIdKey, activity.Id);
+        
+        if (isNewActivity)
+        {
+            activity.Dispose();
         }
 
         return new SerializedMessage(messageProperties, messageBody);
@@ -79,12 +75,9 @@ internal sealed class CustomMessageSerializationStrategy : IMessageSerialization
         }
 
         var activityId = GetHeaderValue(properties, ActivityIdKey);
-        var traceId = GetHeaderValue(properties, TraceIdKey);
-        var causationId = GetHeaderValue(properties, CausationIdKey);
         var userId = GetHeaderValue(properties, UserIdKey);
 
-        _contextAccessor.Context = new Context(activityId, traceId, properties.CorrelationId,
-            properties.MessageId, causationId, userId);
+        _contextAccessor.Context = new Context(activityId, userId, properties.MessageId);
 
         var messageBody = _serializer.BytesToMessage(type, body);
         return MessageFactory.CreateInstance(type, messageBody, properties);

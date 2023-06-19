@@ -45,7 +45,7 @@ internal sealed class LoggingScopeHttpMessageHandler : DelegatingHandler
             public static readonly EventId PipelineEnd = new(101, "RequestPipelineEnd");
         }
 
-        private static readonly Func<ILogger, HttpMethod, Uri?, IDisposable> RequestPipelineScope =
+        private static readonly Func<ILogger, HttpMethod, Uri?, IDisposable?> RequestPipelineScope =
             LoggerMessage.DefineScope<HttpMethod, Uri?>("HTTP {HttpMethod} {Uri}");
 
         private static readonly Action<ILogger, HttpMethod, Uri?, Exception?> RequestPipelineStart =
@@ -56,7 +56,7 @@ internal sealed class LoggingScopeHttpMessageHandler : DelegatingHandler
             LoggerMessage.Define<HttpStatusCode>(LogLevel.Information, EventIds.PipelineEnd,
                 "End processing HTTP request - {StatusCode}");
 
-        public static IDisposable BeginRequestPipelineScope(ILogger logger, HttpRequestMessage request,
+        public static IDisposable? BeginRequestPipelineScope(ILogger logger, HttpRequestMessage request,
             ISet<string> maskedRequestUrlParts, string maskTemplate)
         {
             var uri = MaskUri(request.RequestUri, maskedRequestUrlParts, maskTemplate);

@@ -3,7 +3,7 @@ using System.Reflection;
 using Humanizer;
 using Micro.Attributes;
 
-namespace Micro.Messaging.AzureServiceBus.Internals;
+namespace Micro.Messaging.Azure.ServiceBus.Internals;
 
 internal sealed class AzureServiceBusBrokerConventions : IBrokerConventions
 {

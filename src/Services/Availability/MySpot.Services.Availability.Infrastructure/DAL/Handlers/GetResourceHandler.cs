@@ -17,6 +17,11 @@ internal sealed class GetResourceHandler : IQueryHandler<GetResource, ResourceDe
 
     public Task<ResourceDetailsDto?> HandleAsync(GetResource query, CancellationToken cancellationToken = default)
     {
+        if (query.ResourceId == Guid.Empty)
+        {
+            return Task.FromResult<ResourceDetailsDto?>(default);
+        }
+        
         return _resources
             .AsNoTracking()
             .Where(x => x.Id.Equals(query.ResourceId))

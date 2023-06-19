@@ -4,7 +4,7 @@ using Micro.Abstractions;
 using Micro.Attributes;
 using Microsoft.Extensions.Hosting;
 
-namespace Micro.Messaging.AzureServiceBus.Internals;
+namespace Micro.Messaging.Azure.ServiceBus.Internals;
 
 internal sealed class AzureResourceInitializer : IHostedService
 {

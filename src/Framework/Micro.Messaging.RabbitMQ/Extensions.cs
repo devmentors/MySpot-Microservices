@@ -22,8 +22,8 @@ public static class Extensions
     public static IServiceCollection AddRabbitMQ(this IServiceCollection services, IConfiguration configuration)
     {
         var section = configuration.GetSection("rabbitmq");
-        var options = section.BindOptions<RabbitMqOptions>();
-        services.Configure<RabbitMqOptions>(section);
+        var options = section.BindOptions<RabbitMQOptions>();
+        services.Configure<RabbitMQOptions>(section);
         
         if (!options.Enabled)
         {

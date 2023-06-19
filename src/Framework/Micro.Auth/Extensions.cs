@@ -19,6 +19,8 @@ public static class Extensions
         var section = configuration.GetSection(SectionName);
         var options = section.BindOptions<AuthOptions>();
         services.Configure<AuthOptions>(section);
+        services.AddAuthorization();
+        services.AddAuthentication();
         
         if (!section.Exists())
         {
@@ -191,7 +193,7 @@ public static class Extensions
         services.AddSingleton(tokenValidationParameters);
         services.AddAuthorization(a =>
         {
-            a.AddPolicy("cert", p =>
+            a.AddPolicy("certificate", p =>
             {
                 p.AddAuthenticationSchemes(CertificateAuthenticationDefaults.AuthenticationScheme).RequireAuthenticatedUser();
             });

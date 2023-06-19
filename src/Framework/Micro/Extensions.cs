@@ -1,5 +1,9 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Micro.Identity;
 using Micro.Serialization;
 using Micro.Time;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,8 +22,20 @@ public static class Extensions
     }
 
     public static IServiceCollection AddMicro(this IServiceCollection services, IConfiguration configuration)
-        => services
-            .Configure<AppOptions>(configuration.GetSection("app"))
+    {
+        var section = configuration.GetSection("app");
+        var options = section.BindOptions<AppOptions>();
+        services.Configure<AppOptions>(section);
+
+        return services
             .AddSingleton<IClock, UtcClock>()
-            .AddSingleton<IJsonSerializer, SystemTextJsonSerializer>();
+            .AddSingleton<IIdGen>(new IdentityGenerator(options.GeneratorId))
+            .AddSingleton<IJsonSerializer, SystemTextJsonSerializer>()
+            .Configure<JsonOptions>(jsonOptions =>
+            {
+                jsonOptions.SerializerOptions.PropertyNameCaseInsensitive = true;
+                jsonOptions.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                jsonOptions.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            });
+    }
 }

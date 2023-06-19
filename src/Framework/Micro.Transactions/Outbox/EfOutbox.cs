@@ -137,8 +137,8 @@ internal sealed class EfOutbox<T> : IOutbox where T : DbContext
         var messageContext =  new MessageContext(messageId, context);
         var envelope = Activator.CreateInstance(envelopeType, message, messageContext);
         
-        _logger.LogInformation("Sending a message from outbox: {Name} [Message ID: {MessageId}, Correlation ID: {CorrelationId}]...",
-            name, messageId, context.CorrelationId);
+        _logger.LogInformation("Sending a message from outbox: {Name} [Message ID: {MessageId}, Activity ID: {ActivityId}]...",
+            name, messageId, context.ActivityId);
         
         var sendMessageTask = sendMethod.Invoke(_messageBrokerClient, new[] {envelope, cancellationToken});
         if (sendMessageTask is null)

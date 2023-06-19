@@ -11,13 +11,14 @@ using Micro.HTTP.LoadBalancing;
 using Micro.HTTP.ServiceDiscovery;
 using Micro.Messaging;
 using Micro.Messaging.RabbitMQ;
+using Micro.Messaging.RabbitMQ.Streams;
+using Micro.Observability;
 using Micro.Observability.Logging;
-using Micro.Observability.Metrics;
-using Micro.Observability.Tracing;
 using Micro.Security;
 using Micro.Security.Vault;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Micro.Framework;
 
@@ -32,7 +33,7 @@ public static class Extensions
         builder.Services.AddSingleton(appInfo);
         
         RenderLogo(appOptions);
-        
+
         builder
             .AddLogging()
             .Services
@@ -50,16 +51,15 @@ public static class Extensions
             .AddHeadersForwarding(builder.Configuration)
             .AddMessaging(builder.Configuration)
             .AddRabbitMQ(builder.Configuration)
-            .AddMetrics(builder.Configuration)
-            .AddTracing(builder.Configuration)
+            .AddRabbitMQStreams(builder.Configuration)
             .AddConsul(builder.Configuration)
             .AddFabio(builder.Configuration)
             .AddSecurity(builder.Configuration)
-            .AddLogger(builder.Configuration);
+            .AddLogger(builder.Configuration)
+            .AddObservability(builder.Configuration);
 
         builder.Services
             .AddHttpClient(builder.Configuration)
-            .AddContextHandler()
             .AddVaultCertificatesHandler(builder.Configuration);
         // .AddConsulHandler()
         // .AddFabioHandler();
@@ -80,10 +80,10 @@ public static class Extensions
             .UseSwaggerDocs()
             .UseAuthentication()
             .UseRouting()
-            .UseMetrics()
+            .UseObservability()
             .UseAuthorization()
-            .UseContexts()
             .UseContextLogger()
+            .UseSerilogRequestLogging()
             .UseEndpoints(endpoints => endpoints.MapAsyncApiDocs(app.Configuration));
 
         return app;

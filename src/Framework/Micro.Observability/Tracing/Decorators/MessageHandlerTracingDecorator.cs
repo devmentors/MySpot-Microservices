@@ -28,9 +28,12 @@ internal sealed class MessageHandlerTracingDecorator : IMessageHandler
         var name = Names.GetOrAdd(typeof(T), message.GetType().Name.Underscore());
         using var activity = ActivitySource.StartActivity("subscriber", ActivityKind.Consumer, context.ActivityId);
         activity?.SetTag("message", name);
-        activity?.SetTag("correlation_id", context.CorrelationId);
-        activity?.SetTag("causation_id", context.CausationId);
-        
+        activity?.SetTag("activity_id", context.ActivityId);
+        if (!string.IsNullOrWhiteSpace(context.UserId))
+        {
+            activity?.SetTag("user_id", context.UserId);
+        }
+
         try
         {
             await _messageHandler.HandleAsync(handler, message, cancellationToken);

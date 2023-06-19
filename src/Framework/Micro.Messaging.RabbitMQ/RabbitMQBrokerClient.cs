@@ -29,8 +29,8 @@ internal sealed class RabbitMqBrokerClient : IMessageBrokerClient
         var messageContext = messageEnvelope.Context;
         _messageContextAccessor.MessageContext = messageContext;
         var messageName = _names.GetOrAdd(typeof(T), typeof(T).Name.Underscore());
-        _logger.LogInformation("Sending a message: {MessageName}  [ID: {MessageId}, Correlation ID: {CorrelationId}]...",
-            messageName, messageContext.MessageId, messageContext.Context.CorrelationId);
+        _logger.LogInformation("Sending a message: {MessageName}  [ID: {MessageId}, Activity ID: {ActivityId}]...",
+            messageName, messageContext.MessageId, messageContext.Context.ActivityId);
         await _bus.PubSub.PublishAsync(messageEnvelope.Message, cancellationToken);
     }
 }

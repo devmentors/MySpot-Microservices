@@ -28,10 +28,10 @@ internal sealed class LoggingEventHandlerDecorator<T> : IEventHandler<T> where T
     {
         var context = _contextProvider.Current();
         var name = Names.GetOrAdd(typeof(T), @event.GetType().Name.Underscore());
-        _logger.LogInformation("Handling an event: {EventName} [Trace ID: {TraceId}, Correlation ID: {CorrelationId}, Message ID: {MessageId}, Causation ID: {CausationId}, User ID: {UserId}]...",
-            name, context.TraceId, context.CorrelationId, context.MessageId, context.CausationId, context.UserId ?? string.Empty);
+        _logger.LogInformation("Handling an event: {EventName} [Activity ID: {ActivityId}, Message ID: {MessageId}, User ID: {UserId}']...",
+            name, context.ActivityId, context.MessageId, context.UserId);
         await _handler.HandleAsync(@event, cancellationToken);
-        _logger.LogInformation("Handled an event: {EventName} [Trace ID: {TraceId}, Correlation ID: {CorrelationId}, Message ID: {MessageId}, Causation ID: {CausationId}, User ID: {UserId}]",
-            name, context.TraceId, context.CorrelationId, context.MessageId, context.CausationId, context.UserId ?? string.Empty);
+        _logger.LogInformation("Handled an event: {EventName} [Activity ID: {ActivityId}, Message ID: {MessageId}, User ID: {UserId}]",
+            name, context.ActivityId, context.MessageId, context.UserId);
     }
 }

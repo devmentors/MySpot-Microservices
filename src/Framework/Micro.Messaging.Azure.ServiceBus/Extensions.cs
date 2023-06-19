@@ -2,13 +2,13 @@ using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using Humanizer;
 using Micro.Contexts.Accessors;
-using Micro.Messaging.AzureServiceBus.Internals;
+using Micro.Messaging.Azure.ServiceBus.Internals;
 using Micro.Messaging.Clients;
 using Micro.Messaging.Subscribers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Micro.Messaging.AzureServiceBus;
+namespace Micro.Messaging.Azure.ServiceBus;
 
 public static class Extensions
 {
