@@ -1,7 +1,5 @@
 using Micro.Handlers;
-using Micro.Messaging.Brokers;
 using Micro.Time;
-using MySpot.Services.Reservations.Application.Events;
 using MySpot.Services.Reservations.Core.DomainServices;
 using MySpot.Services.Reservations.Core.Factories;
 using MySpot.Services.Reservations.Core.Repository;
@@ -14,17 +12,15 @@ internal sealed class MakeReservationHandler : ICommandHandler<MakeReservation>
     private readonly IWeeklyReservationsRepository _weeklyReservationsRepository;
     private readonly IWeeklyReservationsService _weeklyReservationsService;
     private readonly IWeeklyReservationsFactory _weeklyReservationsFactory;
-    private readonly IMessageBroker _messageBroker;
     private readonly IClock _clock;
 
     public MakeReservationHandler(IWeeklyReservationsRepository weeklyReservationsRepository,
         IWeeklyReservationsService weeklyReservationsService, IWeeklyReservationsFactory weeklyReservationsFactory,
-        IMessageBroker messageBroker, IClock clock)
+        IClock clock)
     {
         _weeklyReservationsRepository = weeklyReservationsRepository;
         _weeklyReservationsService = weeklyReservationsService;
         _weeklyReservationsFactory = weeklyReservationsFactory;
-        _messageBroker = messageBroker;
         _clock = clock;
     }
 
@@ -46,7 +42,5 @@ internal sealed class MakeReservationHandler : ICommandHandler<MakeReservation>
         var reservation = _weeklyReservationsService.Reserve(currentReservations, lastWeekReservations, parkingSpotId,
             capacity, licensePlate, date, note);
         await _weeklyReservationsRepository.UpdateAsync(currentReservations, cancellationToken);
-        await _messageBroker.SendAsync(new ParkingSpotReserved(reservation.Id, reservation.ParkingSpotId,
-            userId, reservation.Date, reservation.Capacity), cancellationToken);
     }
 }

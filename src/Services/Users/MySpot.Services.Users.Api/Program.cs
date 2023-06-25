@@ -1,6 +1,5 @@
 using Micro.Framework;
 using Micro.Handlers;
-using Micro.Messaging;
 using MySpot.Services.Users.Core;
 using MySpot.Services.Users.Core.Commands;
 using MySpot.Services.Users.Core.Queries;
@@ -43,12 +42,7 @@ app.MapPost("/sign-in", async (SignIn command, IDispatcher dispatcher, ITokenSto
     return Results.Ok(jwt);
 }).WithTags("Account").WithName("Sign in");
 
-
-app.UseMicroFramework()
-    .Subscribe()
-    .Command<SignUp>();
-
-app.Run();
+app.UseMicroFramework().Run();
 
 static Guid UserId(HttpContext context)
     => string.IsNullOrWhiteSpace(context.User.Identity?.Name) ? Guid.Empty : Guid.Parse(context.User.Identity.Name);

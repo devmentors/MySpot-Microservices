@@ -1,6 +1,4 @@
 using Micro.Handlers;
-using Micro.Messaging.Brokers;
-using MySpot.Services.Availability.Application.Events;
 using MySpot.Services.Availability.Application.Exceptions;
 using MySpot.Services.Availability.Core.Entities;
 using MySpot.Services.Availability.Core.Repositories;
@@ -11,12 +9,10 @@ namespace MySpot.Services.Availability.Application.Commands.Handlers;
 internal sealed class AddResourceHandler : ICommandHandler<AddResource>
 {
     private readonly IResourcesRepository _repository;
-    private readonly IMessageBroker _messageBroker;
 
-    public AddResourceHandler(IResourcesRepository repository, IMessageBroker messageBroker)
+    public AddResourceHandler(IResourcesRepository repository)
     {
         _repository = repository;
-        _messageBroker = messageBroker;
     }
 
     public async Task HandleAsync(AddResource command, CancellationToken cancellationToken = default)
@@ -29,6 +25,5 @@ internal sealed class AddResourceHandler : ICommandHandler<AddResource>
 
         var resource = Resource.Create(resourceId, capacity, tags.Select(t => new Tag(t)));
         await _repository.AddAsync(resource);
-        await _messageBroker.SendAsync(new ResourceAdded(resourceId), cancellationToken);
     }
 }

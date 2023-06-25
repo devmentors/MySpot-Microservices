@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Micro.Handlers;
-using Micro.Messaging.Brokers;
 using Micro.Security.Encryption;
 using Micro.Time;
 using Microsoft.Extensions.Logging;
 using MySpot.Services.Users.Core.Entities;
-using MySpot.Services.Users.Core.Events;
 using MySpot.Services.Users.Core.Exceptions;
 using MySpot.Services.Users.Core.Repositories;
 
@@ -21,18 +19,15 @@ internal sealed class SignUpHandler : ICommandHandler<SignUp>
     private readonly IRoleRepository _roleRepository;
     private readonly IPasswordManager _passwordManager;
     private readonly IClock _clock;
-    private readonly IMessageBroker _messageBroker;
     private readonly ILogger<SignUpHandler> _logger;
 
     public SignUpHandler(IUserRepository userRepository, IRoleRepository roleRepository,
-        IPasswordManager passwordManager, IClock clock, IMessageBroker messageBroker,
-        ILogger<SignUpHandler> logger)
+        IPasswordManager passwordManager, IClock clock, ILogger<SignUpHandler> logger)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _passwordManager = passwordManager;
         _clock = clock;
-        _messageBroker = messageBroker;
         _logger = logger;
     }
 
@@ -78,7 +73,6 @@ internal sealed class SignUpHandler : ICommandHandler<SignUp>
             CreatedAt = now
         };
         await _userRepository.AddAsync(user);
-        await _messageBroker.SendAsync(new SignedUp(user.Id, email, role.Name, jobTitle), cancellationToken);
         _logger.LogInformation($"User with ID: '{user.Id}' has signed up.");
     }
 }

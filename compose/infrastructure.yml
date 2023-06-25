@@ -1,54 +1,19 @@
 version: "3.7"
 
 services:
-  # consul:
-  #   image: consul
-  #   container_name: consul
-  #   restart: unless-stopped
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 8500:8500
-  #   # volumes:
-  #   #   - consul:/consul/data
-
-  # fabio:
-  #   image: fabiolb/fabio
-  #   container_name: fabio
-  #   restart: unless-stopped
-  #   environment:
-  #   - FABIO_REGISTRY_CONSUL_ADDR=consul:8500
-  #   networks:
-  #     - myspot
-  #   ports:
-  #   - 9998:9998
-  #   - 9999:9999
-
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: grafana
-  #   restart: unless-stopped
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 3000:3000
-  #   # volumes:
-  #   #   - grafana:/var/lib/grafana
-
-  # jaeger:
-  #   image: jaegertracing/all-in-one
-  #   container_name: jaeger
-  #   restart: unless-stopped
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 5775:5775/udp
-  #     - 5778:5778
-  #     - 6831:6831/udp
-  #     - 6832:6832/udp
-  #     - 9411:9411
-  #     - 14268:14268
-  #     - 16686:16686
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - myspot
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
 
   postgres:
     image: postgres
@@ -64,93 +29,26 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
-  # prometheus:
-  #   build: ./prometheus
-  #   container_name: prometheus
-  #   restart: unless-stopped
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 9090:9090
-  #   # volumes:
-  #   #   - prometheus:/prometheus
-
-  rabbitmq:
-    build: ./rabbitmq
-    container_name: rabbitmq
+  redis:
+    image: redis
+    container_name: redis
     restart: unless-stopped
     networks:
       - myspot
     ports:
-      - 5672:5672
-      - 15672:15672
-      - 15692:15692
+      - 6379:6379
     # volumes: 
-    #   - rabbitmq:/var/lib/rabbitmq
-
-  # seq:
-  #   image: datalust/seq 
-  #   container_name: seq
-  #   restart: unless-stopped
-  #   environment:
-  #     - ACCEPT_EULA=Y
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 5341:80
-  #   # volumes: 
-  #   #   - seq:/data
-
-  # vault:
-  #   image: vault
-  #   container_name: vault
-  #   restart: unless-stopped
-  #   environment:
-  #     - VAULT_ADDR=http://127.0.0.1:8200
-  #     - VAULT_DEV_ROOT_TOKEN_ID=secret
-  #   cap_add:
-  #     - IPC_LOCK
-  #   networks:
-  #     - myspot
-  #   ports:
-  #     - 8200:8200
-  
-
-  # pact-broker:
-  #   image: pactfoundation/pact-broker
-  #   container_name: pact-broker
-  #   ports:
-  #     - 9292:9292
-  #   networks:
-  #     - myspot
-  #   environment:
-  #     PACT_BROKER_PORT: '9292'
-  #     PACT_BROKER_DATABASE_URL: "postgres://postgres@postgres/postgres"
-  #     PACT_BROKER_LOG_LEVEL: INFO
-  #     PACT_BROKER_SQL_LOG_LEVEL: DEBUG
-  #     # PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES is only needed for docker-compose
-  #     # because the database takes longer to start up than the puma process
-  #     # Should not be needed in production.
-  #     PACT_BROKER_DATABASE_CONNECT_MAX_RETRIES: "5"
-  #     # The list of allowed base URLs (not setting this makes the app vulnerable to cache poisoning)
-  #     # This allows the app to be addressed from the host from within another docker container correctly
-  #     PACT_BROKER_BASE_URL: 'https://localhost http://localhost http://localhost:9292 http://pact-broker:9292'
+    #   - redis:/data
 
 networks:
   myspot:
     name: myspot-network
 
 volumes:
-  # consul:
-  #   driver: local
-  # grafana:
-  #   driver: local
   postgres:
     driver: local
-  # prometheus:
-  #   driver: local
-  # rabbitmq:
-  #   driver: local
-  # seq:
+  mongo:
+    driver: local
+  # redis:
   #   driver: local
   

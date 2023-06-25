@@ -1,23 +1,18 @@
 using Micro.DAL.Postgres;
-using Micro.Messaging.Brokers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MySpot.Services.ParkingSpots.Core.Entities;
-using MySpot.Services.ParkingSpots.Core.Events;
 
 namespace MySpot.Services.ParkingSpots.Core.DAL;
 
 internal sealed class ParkingSpotsDataInitializer : IDataInitializer
 {
     private readonly ParkingSpotsDbContext _dbContext;
-    private readonly IMessageBroker _messageBroker;
     private readonly ILogger<ParkingSpotsDataInitializer> _logger;
 
-    public ParkingSpotsDataInitializer(ParkingSpotsDbContext dbContext, IMessageBroker messageBroker,
-        ILogger<ParkingSpotsDataInitializer> logger)
+    public ParkingSpotsDataInitializer(ParkingSpotsDbContext dbContext, ILogger<ParkingSpotsDataInitializer> logger)
     {
         _dbContext = dbContext;
-        _messageBroker = messageBroker;
         _logger = logger;
     }
 
@@ -43,10 +38,5 @@ internal sealed class ParkingSpotsDataInitializer : IDataInitializer
 
         await _dbContext.ParkingSpots.AddRangeAsync(parkingSpots);
         _logger.LogInformation("Initialized parking spots.");
-
-        foreach (var parkingSpot in parkingSpots)
-        {
-            await _messageBroker.SendAsync(new ParkingSpotCreated(parkingSpot.Id));
-        }
     }
 }

@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Micro.Contexts\Micro.Contexts.csproj" />
-    <ProjectReference Include="..\Micro.Messaging.RabbitMQ\Micro.Messaging.RabbitMQ.csproj" />
-    <ProjectReference Include="..\Micro.Messaging\Micro.Messaging.csproj" />
     <ProjectReference Include="..\Micro\Micro.csproj" />
   </ItemGroup>
 

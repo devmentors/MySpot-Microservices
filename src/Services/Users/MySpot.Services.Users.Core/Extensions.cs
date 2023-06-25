@@ -1,9 +1,5 @@
 using System.Runtime.CompilerServices;
 using Micro.DAL.Postgres;
-using Micro.Messaging.RabbitMQ;
-using Micro.Transactions;
-using Micro.Transactions.Inbox;
-using Micro.Transactions.Outbox;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,11 +23,6 @@ public static class Extensions
             .AddScoped<IUserRepository, UserRepository>()
             .AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>()
             .AddPostgres<UsersDbContext>(configuration)
-            .AddInitializer<UsersDataInitializer>()
-            .AddOutbox<UsersDbContext>(configuration)
-            .AddInbox<UsersDbContext>(configuration)
-            .AddMessagingErrorHandlingDecorators()
-            .AddTransactionalDecorators()
-            .AddOutboxInstantSenderDecorators();
+            .AddInitializer<UsersDataInitializer>();
     }
 }

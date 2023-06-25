@@ -1,9 +1,7 @@
 using Micro.Framework;
 using Micro.Handlers;
-using Micro.Messaging;
 using MySpot.Services.Reservations.Application;
 using MySpot.Services.Reservations.Application.Commands;
-using MySpot.Services.Reservations.Application.Events.External;
 using MySpot.Services.Reservations.Application.Queries;
 using MySpot.Services.Reservations.Core;
 using MySpot.Services.Reservations.Infrastructure;
@@ -41,13 +39,7 @@ app.MapDelete("/reservations/{id:guid}", async (Guid id, IDispatcher dispatcher,
     return Results.NoContent();
 }).RequireAuthorization().WithTags("Reservations").WithName("Remove reservation");
 
-app.UseMicroFramework()
-    .Subscribe()
-    .Command<MakeReservation>()
-    .Command<RemoveReservation>()
-    .Event<SignedUp>();
-
-app.Run();
+app.UseMicroFramework().Run();
 
 static Guid UserId(HttpContext context)
     => string.IsNullOrWhiteSpace(context.User.Identity?.Name) ? Guid.Empty : Guid.Parse(context.User.Identity.Name);

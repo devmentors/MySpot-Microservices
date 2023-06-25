@@ -15,7 +15,7 @@ public static class Extensions
         var section = configuration.GetSection("mongo");
         var options = section.BindOptions<MongoOptions>();
         services.Configure<MongoOptions>(section);
-        if (!section.Exists())
+        if (!section.Exists() || !options.Enabled)
         {
             return services;
         }

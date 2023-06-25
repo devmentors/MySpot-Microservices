@@ -7,12 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Micro.Framework\Micro.Framework.csproj" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.8" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.8" />
-      <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+      <ProjectReference Include="..\Micro\Micro.csproj" />
     </ItemGroup>
-
+    
 </Project>

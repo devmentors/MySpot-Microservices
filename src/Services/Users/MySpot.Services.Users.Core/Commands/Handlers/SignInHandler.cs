@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Micro.Auth.JWT;
 using Micro.Handlers;
-using Micro.Messaging.Brokers;
 using Micro.Security.Encryption;
 using Microsoft.Extensions.Logging;
-using MySpot.Services.Users.Core.Events;
 using MySpot.Services.Users.Core.Exceptions;
 using MySpot.Services.Users.Core.Repositories;
 using MySpot.Services.Users.Core.Services;
@@ -18,18 +16,15 @@ internal sealed class SignInHandler : ICommandHandler<SignIn>
     private readonly IJsonWebTokenManager _jsonWebTokenManager;
     private readonly IPasswordManager _passwordManager;
     private readonly ITokenStorage _tokenStorage;
-    private readonly IMessageBroker _messageBroker;
     private readonly ILogger<SignInHandler> _logger;
 
     public SignInHandler(IUserRepository userRepository, IJsonWebTokenManager jsonWebTokenManager,
-        IPasswordManager passwordManager, ITokenStorage tokenStorage, IMessageBroker messageBroker,
-        ILogger<SignInHandler> logger)
+        IPasswordManager passwordManager, ITokenStorage tokenStorage, ILogger<SignInHandler> logger)
     {
         _userRepository = userRepository;
         _jsonWebTokenManager = jsonWebTokenManager;
         _passwordManager = passwordManager;
         _tokenStorage = tokenStorage;
-        _messageBroker = messageBroker;
         _logger = logger;
     }
 
@@ -63,7 +58,6 @@ internal sealed class SignInHandler : ICommandHandler<SignIn>
 
         var jwt = _jsonWebTokenManager.CreateToken(user.Id.ToString(), user.Email, user.Role.Name, claims: claims);
         jwt.Email = user.Email;
-        await _messageBroker.SendAsync(new SignedIn(user.Id), cancellationToken);
         _logger.LogInformation($"User with ID: '{user.Id}' has signed in.");
         _tokenStorage.Set(jwt);
     }

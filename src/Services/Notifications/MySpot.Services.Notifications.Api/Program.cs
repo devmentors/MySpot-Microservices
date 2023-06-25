@@ -1,11 +1,9 @@
 using Micro.DAL.Postgres;
 using Micro.Framework;
 using Micro.Handlers;
-using Micro.Messaging;
 using MySpot.Services.Notifications.Api.Clients;
 using MySpot.Services.Notifications.Api.Commands;
 using MySpot.Services.Notifications.Api.DAL;
-using MySpot.Services.Notifications.Api.Events.External;
 
 var builder = WebApplication
     .CreateBuilder(args)
@@ -27,9 +25,5 @@ app.MapPost("/emails/send", async (SendEmail command, IDispatcher dispatcher) =>
     await dispatcher.SendAsync(command);
     return Results.NoContent();
 }).WithTags("Emails").WithName("Send email");;
-
-app.Subscribe()
-    .Command<SendEmail>()
-    .Event<SignedUp>();
 
 app.UseMicroFramework().Run();

@@ -1,6 +1,5 @@
 using Micro.Framework;
 using Micro.Handlers;
-using Micro.Messaging;
 using MySpot.Services.Availability.Application;
 using MySpot.Services.Availability.Application.Commands;
 using MySpot.Services.Availability.Application.Queries;
@@ -35,11 +34,5 @@ app.MapPost("/resources", async (AddResource command, IDispatcher dispatcher) =>
     await dispatcher.SendAsync(command);
     return Results.CreatedAtRoute("Get resource", new  {id = command.ResourceId});
 }).WithTags("Resources").WithName("Add resource");
-
-app.Subscribe()
-    .Command<AddResource>()
-    .Command<DeleteResource>()
-    .Command<ReserveResource>()
-    .Command<ReleaseResourceReservation>();
 
 app.UseMicroFramework().Run();
