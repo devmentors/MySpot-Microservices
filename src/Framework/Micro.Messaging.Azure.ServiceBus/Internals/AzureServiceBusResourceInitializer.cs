@@ -1,17 +1,18 @@
 using System.Reflection;
 using Azure.Messaging.ServiceBus.Administration;
+using Humanizer;
 using Micro.Abstractions;
 using Micro.Attributes;
 using Microsoft.Extensions.Hosting;
 
 namespace Micro.Messaging.Azure.ServiceBus.Internals;
 
-internal sealed class AzureResourceInitializer : IHostedService
+internal sealed class AzureServiceBusResourceInitializer : IHostedService
 {
     private readonly ServiceBusAdministrationClient _adminClient;
     private readonly IBrokerConventions _conventions;
 
-    public AzureResourceInitializer(ServiceBusAdministrationClient adminClient, IBrokerConventions conventions)
+    public AzureServiceBusResourceInitializer(ServiceBusAdministrationClient adminClient, IBrokerConventions conventions)
     {
         _adminClient = adminClient;
         _conventions = conventions;
@@ -22,15 +23,18 @@ internal sealed class AzureResourceInitializer : IHostedService
         var messageTypes = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(x => x.GetTypes())
-            .Where(x => x.IsClass && !x.IsAbstract && typeof(IMessage).IsAssignableFrom(x));
+            .Where(x => x is {IsClass: true, IsAbstract: false} && typeof(IMessage).IsAssignableFrom(x));
 
         foreach (var messageType in messageTypes)
         {
             var attribute = messageType.GetCustomAttribute<MessageAttribute>();
-
-            await CreateTopicAsync(messageType, cancellationToken);
+            if (attribute is null)
+            {
+                continue;
+            }
             
-            if (!string.IsNullOrWhiteSpace(attribute?.Queue))
+            await CreateTopicAsync(messageType, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(attribute.Queue))
             {
                 await CreateSubscriptionAsync(messageType, cancellationToken);
             }
@@ -44,10 +48,10 @@ internal sealed class AzureResourceInitializer : IHostedService
     {
         var topicName = _conventions.GetTopicNamingConvention(messageType);
         var topicExists = await _adminClient.TopicExistsAsync(topicName, cancellationToken);
-
         if (!topicExists.Value)
         {
-            await _adminClient.CreateTopicAsync(topicName, cancellationToken);
+            var topicOptions = new CreateTopicOptions(topicName);
+            await _adminClient.CreateTopicAsync(topicOptions, cancellationToken);
         }
     }
     
@@ -56,10 +60,20 @@ internal sealed class AzureResourceInitializer : IHostedService
         var topicName = _conventions.GetTopicNamingConvention(messageType);
         var subscriptionName = _conventions.GetSubscriptionNamingConvention(messageType,null);
         var subscriptionExists = await _adminClient.SubscriptionExistsAsync(topicName, subscriptionName, cancellationToken);
-
         if (!subscriptionExists.Value)
         {
-            await _adminClient.CreateSubscriptionAsync(topicName, subscriptionName, cancellationToken);
+            var subscriptionOptions = new CreateSubscriptionOptions(topicName, subscriptionName);
+            var ruleOptions = new CreateRuleOptions
+            {
+                Filter = new CorrelationRuleFilter
+                {
+                    ApplicationProperties =
+                    {
+                        ["type"] = messageType.Name.Underscore()
+                    }
+                }
+            };
+            await _adminClient.CreateSubscriptionAsync(subscriptionOptions, ruleOptions, cancellationToken);
         }
     }
 }

@@ -4,6 +4,7 @@ public sealed class SerilogOptions
 {
     public string Level { get; set; } = string.Empty;
     public ConsoleOptions Console { get; set; } = new();
+    public ApplicationInsightsOptions ApplicationInsights { get; set; } = new();
     public FileOptions File { get; set; } = new();
     public SeqOptions Seq { get; set; } = new();
     public IEnumerable<string>? ExcludePaths { get; set; }
@@ -28,5 +29,10 @@ public sealed class SerilogOptions
         public bool Enabled { get; set; }
         public string Url { get; set; } = string.Empty;
         public string ApiKey { get; set; } = string.Empty;
+    }
+    
+    public sealed class ApplicationInsightsOptions
+    {
+        public bool Enabled { get; set; }
     }
 }

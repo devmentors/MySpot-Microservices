@@ -24,7 +24,6 @@ public static class Extensions
         var section = configuration.GetSection("rabbitmq");
         var options = section.BindOptions<RabbitMQOptions>();
         services.Configure<RabbitMQOptions>(section);
-        
         if (!options.Enabled)
         {
             return services;

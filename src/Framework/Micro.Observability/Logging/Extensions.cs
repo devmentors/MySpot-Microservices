@@ -1,4 +1,5 @@
 using Micro.Handlers;
+using Micro.Observability.Azure;
 using Micro.Observability.Logging.Decorators;
 using Micro.Observability.Logging.Middlewares;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
+using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 
 namespace Micro.Observability.Logging;
 
@@ -56,11 +58,12 @@ public static class Extensions
             var appOptions = context.Configuration.BindOptions<AppOptions>(appSectionName);
             var loggerOptions = context.Configuration.BindOptions<SerilogOptions>(loggerSectionName);
 
-            Configure(loggerOptions, appOptions, loggerConfiguration, context.HostingEnvironment.EnvironmentName);
+            Configure(loggerOptions, appOptions, context.Configuration, loggerConfiguration,
+                context.HostingEnvironment.EnvironmentName);
             configure?.Invoke(loggerConfiguration);
         });
 
-    private static void Configure(SerilogOptions serilogOptions, AppOptions appOptions,
+    private static void Configure(SerilogOptions serilogOptions, AppOptions appOptions, IConfiguration configuration,
         LoggerConfiguration loggerConfiguration, string environmentName)
     {
         var level = GetLogEventLevel(serilogOptions.Level);
@@ -88,18 +91,37 @@ public static class Extensions
         serilogOptions.ExcludeProperties?.ToList().ForEach(p => loggerConfiguration.Filter
             .ByExcluding(Matching.WithProperty(p)));
 
-        Configure(loggerConfiguration, serilogOptions);
+        Configure(loggerConfiguration, configuration, serilogOptions);
     }
 
-    private static void Configure(LoggerConfiguration loggerConfiguration, SerilogOptions options)
+    private static void Configure(LoggerConfiguration loggerConfiguration, IConfiguration configuration,
+        SerilogOptions options)
     {
         var consoleOptions = options.Console;
+        var applicationInsights = options.ApplicationInsights;
         var fileOptions = options.File;
         var seqOptions = options.Seq;
 
         if (consoleOptions.Enabled)
         {
             loggerConfiguration.WriteTo.Console(outputTemplate: ConsoleOutputTemplate);
+        }
+
+        if (applicationInsights.Enabled)
+        {
+            var appInsightsOptions = configuration.BindOptions<ApplicationInsightsOptions>("applicationInsights");
+            if (!appInsightsOptions.Enabled)
+            {
+                throw new InvalidOperationException("Application Insights is not enabled.");
+            }
+
+            if (string.IsNullOrWhiteSpace(appInsightsOptions.ConnectionString))
+            {
+                throw new InvalidOperationException("Application Insights connection string is empty.");
+            }
+
+            loggerConfiguration.WriteTo.ApplicationInsights(appInsightsOptions.ConnectionString,
+                new TraceTelemetryConverter());
         }
 
         if (fileOptions.Enabled)

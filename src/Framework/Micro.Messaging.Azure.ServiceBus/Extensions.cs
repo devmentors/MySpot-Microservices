@@ -38,7 +38,7 @@ public static class Extensions
             
         if (options.InitializeResources)
         {
-            services.AddHostedService<AzureResourceInitializer>();
+            services.AddHostedService<AzureServiceBusResourceInitializer>();
         }
 
         return services;

@@ -18,7 +18,6 @@ public static class Extensions
         return services
             .AddScoped<IParkingSpotsService, ParkingSpotsService>()
             .AddPostgres<ParkingSpotsDbContext>(configuration)
-            .AddInitializer<ParkingSpotsDataInitializer>()
             .AddSingleton<IAvailabilityApiClient, AvailabilityApiClient>()
             .AddOutbox<ParkingSpotsDbContext>(configuration)
             .AddInbox<ParkingSpotsDbContext>(configuration)

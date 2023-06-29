@@ -10,6 +10,7 @@ using Micro.HTTP;
 using Micro.HTTP.LoadBalancing;
 using Micro.HTTP.ServiceDiscovery;
 using Micro.Messaging;
+using Micro.Messaging.Azure.ServiceBus;
 using Micro.Messaging.RabbitMQ;
 using Micro.Messaging.RabbitMQ.Streams;
 using Micro.Observability;
@@ -50,6 +51,7 @@ public static class Extensions
             .AddAsyncApiDocs(builder.Configuration)
             .AddHeadersForwarding(builder.Configuration)
             .AddMessaging(builder.Configuration)
+            .AddAzureServiceBus(builder.Configuration)
             .AddRabbitMQ(builder.Configuration)
             .AddRabbitMQStreams(builder.Configuration)
             .AddConsul(builder.Configuration)
@@ -73,14 +75,13 @@ public static class Extensions
 
     public static WebApplication UseMicroFramework(this WebApplication app)
     {
-        app
-            .UseHeadersForwarding()
-            .UseCorsPolicy()
-            .UseErrorHandling()
-            .UseSwaggerDocs()
-            .UseAuthentication()
-            .UseRouting()
-            .UseObservability()
+        Observability.Azure.Extensions.UseObservability(app
+                .UseHeadersForwarding()
+                .UseCorsPolicy()
+                .UseErrorHandling()
+                .UseSwaggerDocs()
+                .UseAuthentication()
+                .UseRouting())
             .UseAuthorization()
             .UseContextLogger()
             .UseSerilogRequestLogging()

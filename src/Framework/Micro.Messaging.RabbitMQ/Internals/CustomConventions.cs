@@ -32,9 +32,9 @@ internal sealed class CustomConventions : IConventions
         ExchangeNamingConvention = type => _exchanges.GetOrAdd(type, _ =>
         {
             var attribute = GetMessageAttribute(type);
-            if (!string.IsNullOrWhiteSpace(attribute.Exchange))
+            if (!string.IsNullOrWhiteSpace(attribute.Topic))
             {
-                return attribute.Exchange;
+                return attribute.Topic;
             }
 
             var exchange = string.IsNullOrWhiteSpace(type.FullName)
@@ -62,7 +62,7 @@ internal sealed class CustomConventions : IConventions
         TopicNamingConvention = type => _topics.GetOrAdd(type, _ =>
         {
             var attribute = GetMessageAttribute(type);
-            var topic = string.IsNullOrWhiteSpace(attribute.Topic) ? GetTypeKey(type) : attribute.Topic;
+            var topic = string.IsNullOrWhiteSpace(attribute.Key) ? GetTypeKey(type) : attribute.Key;
 
             return topic;
         });

@@ -51,9 +51,9 @@ public sealed class TestMessageBroker : IDisposable
             configuration =>
             {
                 configuration.WithQueueName(queue);
-                if (!string.IsNullOrWhiteSpace(messageAttribute.Topic))
+                if (!string.IsNullOrWhiteSpace(messageAttribute.Key))
                 {
-                    configuration.WithTopic(messageAttribute.Topic);
+                    configuration.WithTopic(messageAttribute.Key);
                 }
             });
 

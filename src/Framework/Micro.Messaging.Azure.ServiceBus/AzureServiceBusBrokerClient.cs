@@ -40,12 +40,15 @@ internal sealed class AzureServiceBusBrokerClient : IMessageBrokerClient
         var topicName = _conventions.GetTopicNamingConvention(typeof(T));
         var sender = _client.CreateSender(topicName);
         var json = _serializer.Serialize(messageEnvelope.Message);
-
-        var serviceBusMessage = new ServiceBusMessage(json);
-        serviceBusMessage.MessageId = messageContext.MessageId;
-        serviceBusMessage.CorrelationId = messageContext.Context.ActivityId;
+        var serviceBusMessage = new ServiceBusMessage(json)
+        {
+            MessageId = messageContext.MessageId,
+            CorrelationId = messageContext.Context.ActivityId
+        };
         serviceBusMessage.ApplicationProperties.Add("type", typeof(T).Name.Underscore());
-        
+        serviceBusMessage.ApplicationProperties.Add("user", messageContext.Context.UserId);
         await sender.SendMessageAsync(serviceBusMessage, cancellationToken);
+        _logger.LogInformation("Sent a message: {MessageName} to topic: {TopicName}  [ID: {MessageId}, Activity ID: {ActivityId}]...",
+            messageName, topicName, messageContext.MessageId, messageContext.Context.ActivityId);
     }
 }

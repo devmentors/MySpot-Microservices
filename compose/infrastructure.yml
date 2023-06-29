@@ -50,6 +50,20 @@ services:
   #     - 14268:14268
   #     - 16686:16686
 
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: unless-stopped
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - myspot
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+
   postgres:
     image: postgres
     shm_size: '4gb'
@@ -87,6 +101,17 @@ services:
       - 15692:15692
     # volumes: 
     #   - rabbitmq:/var/lib/rabbitmq
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - myspot
+    ports:
+      - 6379:6379
+    # volumes: 
+    #   - redis:/data
 
   # seq:
   #   image: datalust/seq 
@@ -145,11 +170,15 @@ volumes:
   #   driver: local
   # grafana:
   #   driver: local
+  mongo:
+    driver: local
   postgres:
     driver: local
   # prometheus:
   #   driver: local
   # rabbitmq:
+  #   driver: local
+  # redis:
   #   driver: local
   # seq:
   #   driver: local
